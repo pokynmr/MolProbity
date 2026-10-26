@@ -10,5 +10,6 @@ The lib/ directory bundles third-party libraries (for example PHPMailer,
 PDFBox, MySQL Connector/J) that carry their own licenses; see the notices
 in those files.
 
-Modified in the pokynmr fork (2026) to run on PHP 8: files in lib/, cmdline/ and
-public_html/ changed as listed in README.md and in the git history of this fork.
+PokyMolProbity (2026), modified by the POKY project to run on PHP 8: files in lib/, cmdline/ and
+public_html/ changed as listed in README.md and in the git history of
+https://github.com/pokynmr/PokyMolProbity.

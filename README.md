@@ -1,3 +1,11 @@
+# PokyMolProbity
+
+PokyMolProbity is the POKY project's fork of the Richardson Lab's MolProbity 4.5.2
+(Apache-2.0), changed to run on PHP 8; the POKY NMR web servers use it. It is not
+MolProbity and is not affiliated with or endorsed by the Richardson Lab or Duke University.
+See "PHP 8" below and the [License](#license) section. The rest of this file is the
+upstream README.
+
 Updated Jan 02 2024
 
 # Welcome to MolProbity!!
@@ -36,7 +44,7 @@ Installation is fairly straightforward but will probably require some system
 administration background.  The most notable wrinkle is the need to install
 an older version of PHP (PHP5.6) as the default PHP interpreter.
 
-**PHP 8 (pokynmr fork, October 2026).** This fork also runs on PHP 8 (checked with
+**PHP 8 (PokyMolProbity, October 2026).** PokyMolProbity runs on PHP 8 (checked with
 PHP 8.4.27 for the command-line tools `oneline-analysis` and `residue-analysis`). The
 oneline / residue outputs are byte-identical to the unmodified code (commit daee525)
 under PHP 7.4.33, run whole and split per model, for X-ray proteins, RNA and NMR ensembles.
