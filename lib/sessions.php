@@ -397,8 +397,8 @@ function mpSessLifetime($id)
     $dataDir = MP_JOB_DATA_DIR.$id;
     if($fp = @fopen("$dataDir/".MP_DIR_SYSTEM."/lifetime", "r"))
     {
-        $lastTouched = trim(fgets($fp, 1024)) + 0;
-        $destroyOn = trim(fgets($fp, 1024)) + 0;
+        $lastTouched = mp_num(trim(fgets($fp, 1024)));
+        $destroyOn = mp_num(trim(fgets($fp, 1024)));
         @fclose($fp);
 
         // For backwards compat: second line used to be text

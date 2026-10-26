@@ -633,7 +633,7 @@ function splitPdbModels($infile)
         if($start == 'MODEL ')
         {
             $keeplines = true;
-            $num = trim(substr($line, 5, 20)) + 0;
+            $num = mp_num(trim(substr($line, 5, 20)));
 
             $tmpFile = mpTempfile("tmp_pdb_");
             $modelFiles[$num] = $tmpFile;
@@ -695,7 +695,7 @@ function joinPdbModels($infiles)
     $useKeysAsModelNumbers = true;
     foreach($infiles as $key => $dummy)
     {
-        $key = $key + 0;
+        $key = mp_num($key);
         $useKeysAsModelNumbers =
             $useKeysAsModelNumbers && $key > 0 && is_int($key);
     }
@@ -749,7 +749,7 @@ function convertModelsToChains($infile)
     //$possibleIDs = array_slice($possibleIDs, 0, 36); // subset of chains for testing
     $unusedIDs = array();
     for($i = 0; $i <= count($possibleIDs); $i++)
-        $unusedIDs[ $possibleIDs{$i} ] = $possibleIDs{$i};
+        $unusedIDs[ $possibleIDs[$i] ] = $possibleIDs[$i];
 
     // Maps old chain IDs to new chain IDs. Mappings are pulled from $unusedIDs.
     // This is cleared out every time a new MODEL is encountered.
@@ -762,15 +762,15 @@ function convertModelsToChains($infile)
         $line = fgets($in);
         if(preg_match('/^(ATOM|HETATM|TER|ANISOU)/', $line) && strlen($line) >= 22)
         {
-            $cid = $line{20}.$line{21};
+            $cid = $line[20].$line[21];
             if(!isset($idmap[$cid]))
             {
                 if(isset($ununsedIDs[$cid]))    $idmap[$cid] = $unusedIDs[$cid];
                 else                            $idmap[$cid] = reset($unusedIDs);
                 unset($unusedIDs[ $idmap[$cid] ]);
             }
-            $line{20} = $idmap[$cid]{0};
-            $line{21} = $idmap[$cid]{1};
+            $line[20] = $idmap[$cid][0];
+            $line[21] = $idmap[$cid][1];
             if (count($unusedIDs)>0) {
               fwrite($out, $line);
             }
@@ -1540,7 +1540,7 @@ function replacePdbRemark($inpath, $remarkText, $remarkNumber)
         $start = substr($line, 0, 6);
         if($start == 'REMARK')
         {
-            $num = substr($line, 7, 3) + 0;
+            $num = mp_num(substr($line, 7, 3));
             if($num >= $remarkNumber)
             {
                 if($num == $remarkNumber)
@@ -1573,7 +1573,7 @@ function replacePdbRemark($inpath, $remarkText, $remarkNumber)
         $start = substr($line, 0, 6);
         if($start == 'REMARK')
         {
-            $num = substr($line, 7, 3) + 0;
+            $num = mp_num(substr($line, 7, 3));
             if($num == $remarkNumber) continue;
         }
         fwrite($out, $line);

@@ -20,6 +20,16 @@ if(!defined('MP_BASE_DIR')) die("MP_BASE_DIR is not defined.");
 // uninitiallized variables, keys not in arrays, etc. -- all the implicit PHP
 // behaviors that this code counts on  ;)
 error_reporting(E_ALL ^ E_NOTICE);
+// PHP 8 raised those notices to warnings: keep them as quiet as under PHP 7, and
+// leave out the PHP 8 deprecations (substr(null), session callbacks), which do not
+// change any result.
+if(PHP_MAJOR_VERSION >= 8)
+{
+    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+    set_error_handler(function($errno, $errstr) {
+        return preg_match('/^(Undefined (array key|offset|variable|property|index)|Trying to access array offset on|Attempt to read property)/', $errstr) == 1;
+    }, E_WARNING);
+}
 
 include_once(MP_BASE_DIR.'/config/config.php'); // Import all the constants we use
 require_once(MP_BASE_DIR.'/config/defaults.php'); // Import all the constants we use
@@ -682,7 +692,7 @@ function mpReadfile($filepath)
     // Downloads can take a long time for big files, so PHP could time out.
     // According to notes in the manual, this should return the value from
     // the last call to set_time_limit() if it was called previously.
-    $old_limit = ini_get('max_execution_time')+0;
+    $old_limit = mp_num(ini_get('max_execution_time'));
     set_time_limit(0); // no limit
     // It's not enough to extend the time; we may need more memory too.
     // In theory we shouldn't, but I guess the garbage collector leaks.

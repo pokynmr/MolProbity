@@ -305,7 +305,7 @@ function pdbstat($pdbfilename)
                 else { $heavyatoms++; }
 
                 # Does this residue have alternate conformations?
-                if($atom{4} != ' ')
+                if($atom[4] != ' ')
                 {
                     $allAlts[$id] = $id;
                     # TODO: This is still very protein-centric

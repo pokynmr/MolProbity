@@ -1020,9 +1020,9 @@ function makeSummaryStatsTable($resolution, $clash, $rama, $rota, $cbdev, $pperp
 
             //Rotamer outliers:
             //if($rotaOutPct+0 <= 1)      $bg = $bgGood; //old top500 cutoff, matched outlier cutoff pct
-            if($rotaOutPct+0 <= 0.3)     $bg = $bgGood; //new top8000 cutoff, matches new outlier cutoff pct
+            if(mp_num($rotaOutPct) <= 0.3)     $bg = $bgGood; //new top8000 cutoff, matches new outlier cutoff pct
             //elseif($rotaOutPct+0 <= 5)  $bg = $bgFair; //old top500 cutoff
-            elseif($rotaOutPct+0 <= 1.5) $bg = $bgFair; //new top8000 cutoff, set as 5*(outlier cutoff) same as with top500
+            elseif(mp_num($rotaOutPct) <= 1.5) $bg = $bgFair; //new top8000 cutoff, set as 5*(outlier cutoff) same as with top500
             else                         $bg = $bgPoor;
             $entry .= "<td>Poor rotamers</td><td bgcolor='$bg'>$rotaOut</td><td bgcolor='$bg'>$rotaOutPct%</td>\n";
             $entry .= "<td>Goal: &lt;0.3%</td></tr>\n";
@@ -1030,8 +1030,8 @@ function makeSummaryStatsTable($resolution, $clash, $rama, $rota, $cbdev, $pperp
             //Rotamer Favored:
            foreach($rota as $r) { if($r['eval'] == "Favored") $rotaFav++; }
            $rotaFavPct = sprintf("%.2f", 100.0 * $rotaFav/$rotaTot);
-           if($rotaFavPct+0 >= 98)     $bg = $bgGood; //top8000 cutoff for favored rotamers
-           elseif($rotaFavPct+0 >= 95) $bg = $bgFair; //rotaFav bgGood cutoff was same as for ramaFav, so bgFair cutoff was set the same as well 
+           if(mp_num($rotaFavPct) >= 98)     $bg = $bgGood; //top8000 cutoff for favored rotamers
+           elseif(mp_num($rotaFavPct) >= 95) $bg = $bgFair; //rotaFav bgGood cutoff was same as for ramaFav, so bgFair cutoff was set the same as well 
            else                        $bg = $bgPoor;
            $entry .= "<tr><td>Favored rotamers</td><td bgcolor='$bg'>$rotaFav</td><td bgcolor='$bg'>$rotaFavPct%</td>\n";
            $entry .= "<td>Goal: &gt;98%</td></tr>\n";
@@ -1056,13 +1056,13 @@ function makeSummaryStatsTable($resolution, $clash, $rama, $rota, $cbdev, $pperp
             if($firstRow) $firstRow = false;
             else $entry .= "<tr>";
 
-            if($ramaOutPct+0 <= 0.05) $bg = $bgGood;
-            elseif($ramaOut == 1 || $ramaOutPct+0 <= 0.5) $bg = $bgFair;
+            if(mp_num($ramaOutPct) <= 0.05) $bg = $bgGood;
+            elseif($ramaOut == 1 || mp_num($ramaOutPct) <= 0.5) $bg = $bgFair;
             else $bg = $bgPoor;
             $entry .= "<td>Ramachandran outliers</td><td bgcolor='$bg'>$ramaOut</td><td bgcolor='$bg'>$ramaOutPct%</td>\n";
             $entry .= "<td>Goal: &lt;0.05%</td></tr>\n";
-            if($ramaFavPct+0 >= 98)     $bg = $bgGood;
-            elseif($ramaFavPct+0 >= 95) $bg = $bgFair;
+            if(mp_num($ramaFavPct) >= 98)     $bg = $bgGood;
+            elseif(mp_num($ramaFavPct) >= 95) $bg = $bgFair;
             else                        $bg = $bgPoor;
             $entry .= "<tr><td>Ramachandran favored</td><td bgcolor='$bg'>$ramaFav</td><td bgcolor='$bg'>$ramaFavPct%</td>\n";
             $entry .= "<td>Goal: &gt;98%</td></tr>\n";
@@ -1347,8 +1347,8 @@ function makeSummaryStatsTable($resolution, $clash, $rama, $rota, $cbdev, $pperp
         else $entry .= "<tr>";
 
         //CaBLAMout 1% and 5%
-        if($cablamOutPct+0 <= 1.0)    $bg = $bgGood;
-        elseif($cablamOutPct+0 <=5.0) $bg = $bgFair;
+        if(mp_num($cablamOutPct) <= 1.0)    $bg = $bgGood;
+        elseif(mp_num($cablamOutPct) <=5.0) $bg = $bgFair;
         else                        $bg = $bgPoor;
         $entry .= "<td>CaBLAM outliers</td><td bgcolor='$bg'>$cablamOut</td><td bgcolor='$bg'>$cablamOutPct%</td>\n";
         $entry .= "<td>Goal: &lt;1.0%</td></tr>\n";
@@ -1357,8 +1357,8 @@ function makeSummaryStatsTable($resolution, $clash, $rama, $rota, $cbdev, $pperp
         //else                        $bg = $bgPoor;
         //$entry .= "<tr><td>CaBLAM favored</td><td bgcolor='$bg'>$cablamFav</td><td bgcolor='$bg'>$cablamFavPct%</td>\n";
         //$entry .= "<td>Goal: &gt;95.0%</td></tr>\n";
-        if($caGeomPct+0 <= 0.5)    $bg = $bgGood;
-        elseif($caGeomPct+0 <=1.0) $bg = $bgFair;
+        if(mp_num($caGeomPct) <= 0.5)    $bg = $bgGood;
+        elseif(mp_num($caGeomPct) <=1.0) $bg = $bgFair;
         else                        $bg = $bgPoor;
         $entry .= "<tr><td>CA Geometry outliers</td><td bgcolor='$bg'>$caGeomOut</td><td bgcolor='$bg'>$caGeomPct%</td>\n";
         $entry .= "<td>Goal: &lt;0.5%</td></tr>\n";
@@ -1959,10 +1959,10 @@ function writeMulticritChart($infile, $outfile, $snapfile, $resout, $clash, $ram
         //$cni = "'".$cni."'";
         $row = array();
         //$row[] = array('html' => $cnit,             'sort_val' => $eval['order']+0);
-        $row[] = array('html' => $cni,              'sort_val' => $eval['order']+0);
+        $row[] = array('html' => $cni,              'sort_val' => mp_num($eval['order']));
         $row[] = array('html' => $alt,              'sort_val' => $alt);
         $row[] = array('html' => $type,             'sort_val' => $type);
-        $row[] = array('html' => $eval['resHiB'],   'sort_val' => $eval['resHiB']+0);
+        $row[] = array('html' => $eval['resHiB'],   'sort_val' => mp_num($eval['resHiB']));
         foreach(array('clash', 'rama', 'rota', 'cbdev', 'cablam', 'pperp', 'suites', 'bbonds', 'bangles', 'omega') as $type)
         {
           if(is_array($$type))
@@ -1972,7 +1972,7 @@ function writeMulticritChart($infile, $outfile, $snapfile, $resout, $clash, $ram
             else                                $cell['html'] = "-";
             if(isset($eval[$type.'_color']))    $cell['color'] = $eval[$type.'_color'];
             elseif(isset($eval[$type.'_isbad'])) $cell['color'] = $cell_color_bad;
-            if(isset($eval[$type.'_val']))      $cell['sort_val'] = $eval[$type.'_val']+0;
+            if(isset($eval[$type.'_val']))      $cell['sort_val'] = mp_num($eval[$type.'_val']);
             $row[] = $cell;
           }
         }

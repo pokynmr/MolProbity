@@ -66,7 +66,7 @@ if($isNewSess)
 }
 elseif(isset($_REQUEST['eventID']))
 {
-    $eid = $_REQUEST['eventID'] + 0;
+    $eid = mp_num($_REQUEST['eventID']);
     if(isset($page['handlers'][$eid]))
     {
         $funcName   = $page['handlers'][$eid]['funcName'];

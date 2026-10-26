@@ -54,9 +54,9 @@ $table = mpUnserialize($data);
 fclose($in);
 
     // Sort table rows according to user request
-    if(isset($_REQUEST['sort_dir']))    $direction = $_REQUEST['sort_dir']+0;
+    if(isset($_REQUEST['sort_dir']))    $direction = mp_num($_REQUEST['sort_dir']);
     else                                $direction  = 1; // ascending
-    if(isset($_REQUEST['sort_col']))    $col = $_REQUEST['sort_col']+0;
+    if(isset($_REQUEST['sort_col']))    $col = mp_num($_REQUEST['sort_col']);
     else                                $col = -1; // don't sort (native order)
     
     echo formatSortableTable($table, "viewtable.php?$_SESSION[sessTag]&file=$file", $col, $direction);

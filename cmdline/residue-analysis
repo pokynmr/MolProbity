@@ -185,8 +185,8 @@ function summaryAnalysis($modelID)
       runValidationReport($pdbfile, "$rawDir/$model[prefix]geom.data", $model['stats']['use_cdl']);
       $bonds = array_merge(loadValidationBondReport("$rawDir/$model[prefix]geom.data","protein"), loadValidationBondReport("$rawDir/$model[prefix]geom.data", "rna"));
       $angles = array_merge(loadValidationAngleReport("$rawDir/$model[prefix]geom.data","protein"), loadValidationAngleReport("$rawDir/$model[prefix]geom.data", "rna"));
-      if(count($bonds) == 0) $bonds = null;
-      if(count($angles) == 0) $angles = null;
+      if(count((array)$bonds) == 0) $bonds = null;
+      if(count((array)$angles) == 0) $angles = null;
     }
     if($optSuite)
     {
@@ -239,13 +239,13 @@ function summaryAnalysis($modelID)
           if(isset($badCbeta[$cnit]))         $outCountSep++;
           if(isset($bonds[$cnit]))
           {
-            if($bonds[$cnit]['outCount']+0 > 0) $outCountSep++;
+            if(mp_num($bonds[$cnit]['outCount']) > 0) $outCountSep++;
           }
           if(isset($angles[$cnit]))
           {
-            if($angles[$cnit]['outCount']+0 > 0) $outCountSep++;
+            if(mp_num($angles[$cnit]['outCount']) > 0) $outCountSep++;
           }
-          if((isset($badCbeta[$cnit]))or((isset($bonds[$cnit]))and($bonds[$cnit]['outCount']+0 > 0))or((isset($angles[$cnit]))and($angles[$cnit]['outCount']+0 > 0))) {
+          if((isset($badCbeta[$cnit]))or((isset($bonds[$cnit]))and(mp_num($bonds[$cnit]['outCount']) > 0))or((isset($angles[$cnit]))and(mp_num($angles[$cnit]['outCount']) > 0))) {
             $outCount++;
           }
           if(isset($suites[$cnit]))
