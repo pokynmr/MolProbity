@@ -34,7 +34,7 @@ class LogIter
     var $browsers = array();
     var $combos = array();
     
-    function LogIter($start, $end) //{{{
+    function __construct($start, $end) //{{{
     {
         $bots = $this->listBots();
         $uSess = array();
@@ -49,7 +49,7 @@ class LogIter
             // 5 forces $msgtext to not split on internal colons
             // $ip:$sess:$time:$msgcode[:$msgtext]
             $f = explode(':', $s, 5);
-            $timestamp = $f[2] + 0;
+            $timestamp = mp_num($f[2]);
             if($timestamp < $start) continue; // skip these
             elseif($timestamp > $end) break; // guaranteed chronological order
             // Assume IP addr. + sess. ID = globally unique ID
@@ -159,7 +159,7 @@ function divideIntoWeeks($absStart, $absEnd)
     $secondsPerWeek = 60*60*24*7;
     // First $start is Sunday *before* $absStart
     $d = getdate($absStart);
-    $start = mktime(0, 0, 0, $d['mon']+0, $d['mday']+(7-$d['wday']), $d['year']+0) - $secondsPerWeek;
+    $start = mktime(0, 0, 0, mp_num($d['mon']), $d['mday']+(7-$d['wday']), mp_num($d['year'])) - $secondsPerWeek;
     while($start < $absEnd)
     {
         $end = $start + $secondsPerWeek;
@@ -174,10 +174,10 @@ function divideIntoMonths($absStart, $absEnd)
 {
     $divs = array();
     $d = getdate($absStart);
-    $start = mktime(0, 0, 0, $d['mon']+0, 1, $d['year']+0);
+    $start = mktime(0, 0, 0, mp_num($d['mon']), 1, mp_num($d['year']));
     while($start < $absEnd)
     {
-        $end = mktime(0, 0, 0, $d['mon']+1, 1, $d['year']+0);
+        $end = mktime(0, 0, 0, $d['mon']+1, 1, mp_num($d['year']));
         $divs[] = array('start' => $start, 'end' => $end, 'range_text' => date('M Y', $start));
         $start = $end;
         $d = getdate($start);
@@ -190,7 +190,7 @@ function divideIntoYears($absStart, $absEnd)
 {
     $divs = array();
     $d = getdate($absStart);
-    $start = mktime(0, 0, 0, 1, 1, $d['year']+0);
+    $start = mktime(0, 0, 0, 1, 1, mp_num($d['year']));
     while($start < $absEnd)
     {
         $end = mktime(0, 0, 0, 1, 1, $d['year']+1);

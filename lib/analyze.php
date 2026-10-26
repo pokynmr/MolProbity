@@ -623,7 +623,7 @@ function loadBasePhosPerp($datafile)
             $line = explode(':', $line);
             $deltaOut = (trim($line[8]) ? true : false);
             $epsilonOut = (trim($line[10]) ? true : false);
-            $perpdist = $line[6] + 0;
+            $perpdist = mp_num($line[6]);
             if($perpdist < 2.9) //2.9A is dist cutoff for C2' vs C3' endo pucker
               $probpucker = "C2'-endo";
             else
@@ -633,15 +633,15 @@ function loadBasePhosPerp($datafile)
                 'resType'   => strtoupper(substr($line[2],1,-1)),
                 //'chainID'   => strtoupper(substr($line[3],1,-1)),
                 'chainID'   => substr($line[3],1,-1),
-                'resNum'    => trim(substr($line[4], 0, -2)) + 0,
+                'resNum'    => mp_num(trim(substr($line[4], 0, -2))),
                 'insCode'   => strtoupper(substr($line[4], -2, 1)),
                 'altloc'    => ' ', //limitation - doesn't currently handle altloc
-                'Pdist5'    => $line[5] + 0,
-                'Pdist3'    => $line[6] + 0,
-                '3Pdist'    => $line[6] + 0, //Some functions use this name instead of 'Pdist3'
-                'delta'     => $line[7] + 0,
+                'Pdist5'    => mp_num($line[5]),
+                'Pdist3'    => mp_num($line[6]),
+                '3Pdist'    => mp_num($line[6]), //Some functions use this name instead of 'Pdist3'
+                'delta'     => mp_num($line[7]),
                 'deltaOut'  => $deltaOut,
-                'epsilon'   => $line[9] + 0,
+                'epsilon'   => mp_num($line[9]),
                 'epsilonOut'=> $epsilonOut,
                 'outlier'   => ($deltaOut || $epsilonOut),
                 'probpucker'=> $probpucker
@@ -740,11 +740,11 @@ function loadCbetaDev($datafile)
                 'resType'   => strtoupper($line[2]),
                 //'chainID'   => strtoupper($line[3]),
                 'chainID'   => $line[3],
-                'resNum'    => trim(substr($line[4], 0, -1)) + 0,
+                'resNum'    => mp_num(trim(substr($line[4], 0, -1))),
                 'insCode'   => substr($line[4], -1),
-                'dev'       => $line[5] + 0,
-                'dihedral'  => $line[6] + 0,
-                'occ'       => $line[7] + 0
+                'dev'       => mp_num($line[5]),
+                'dihedral'  => mp_num($line[6]),
+                'occ'       => mp_num($line[7])
             );
             if($entry['chainID'] == ""){
                 $entry['chainID'] = " ";
@@ -876,8 +876,8 @@ function loadClashlist($datafile)
     $scores = explode(':', $sum[0]);
     if(startsWith($sum[0], "#sum2")) // in case no clashes, thus no summary
     {
-        $ret['scoreAll']    = $scores[2] + 0;
-        $ret['scoreBlt40']  = $scores[3] + 0;
+        $ret['scoreAll']    = mp_num($scores[2]);
+        $ret['scoreBlt40']  = mp_num($scores[3]);
     }
 
     // Parse data about individual clashes
@@ -887,7 +887,7 @@ function loadClashlist($datafile)
     {
         // Ignore blank lines and #sum... lines
         // That leaves lines starting with colons.
-        if($datum{0} == ':')
+        if($datum[0] == ':')
         {
             $line = explode(':', $datum);
             if (!$_SESSION['useSEGID'])
@@ -904,7 +904,7 @@ function loadClashlist($datafile)
               $res2 = substr($line[3], 0, 12);
               $atm2 = substr($line[3], 13, 5);
             }
-            $dist = abs(trim($line[4])+0);
+            $dist = abs(mp_num(trim($line[4])));
             if(!isset($clashes[$res1]) || $clashes[$res1] < $dist)
             {
                 $clashes[$res1] = $dist;
@@ -945,8 +945,8 @@ function loadClashscore($datafile)
   $sum = array_values(array_slice($data, -2)); // last 2 lines with new indexes
   $scoreAll = explode(" ", $sum[0]);
   $scoreBlt40 = explode(" ", $sum[1]);
-  $ret['scoreAll']    = round(($scoreAll[2]+0), 2);
-  $ret['scoreBlt40']  = round(($scoreBlt40[7]+0), 2);
+  $ret['scoreAll']    = round((mp_num($scoreAll[2])), 2);
+  $ret['scoreBlt40']  = round((mp_num($scoreBlt40[7])), 2);
 
   // Parse data about individual clashes
   $clashes = array(); // in case there are no clashes
@@ -991,7 +991,7 @@ function loadClashscore($datafile)
       $res2 = substr($line[0], 19, 13);
       $atm2 = substr($line[0], 32, 5);
     }
-    $dist = abs(trim($line[1])+0);
+    $dist = abs(mp_num(trim($line[1])));
     if(!isset($clashes[$res1]) || $clashes[$res1] < $dist)
     {
       $clashes[$res1] = $dist;
@@ -1140,7 +1140,7 @@ function loadRotamer($datafile)
             'insCode'   => $decomp['insCode'],
             'altID'     => $decomp['altID'],
             'occupancy' => $line[1],
-            'scorePct'  => $line[2] + 0,
+            'scorePct'  => mp_num($line[2]),
             'chi1'      => $line[3],
             'chi2'      => $line[4],
             'chi3'      => $line[5],
@@ -1245,9 +1245,9 @@ function loadRamachandran($datafile)
             'resNum'    => $decomp['resNum'],
             'insCode'   => $decomp['insCode'],
             'altID'     => $decomp['altID'],
-            'scorePct'  => $line[1] + 0,
-            'phi'       => $line[2] + 0,
-            'psi'       => $line[3] + 0,
+            'scorePct'  => mp_num($line[1]),
+            'phi'       => mp_num($line[2]),
+            'psi'       => mp_num($line[3]),
             'eval'      => $line[4],
             'type'      => $line[5]
         );
@@ -1438,7 +1438,7 @@ function loadOmegalyze($datafile)
             'insCode'   => $decomp['insCode'],
             'altID'     => $decomp['altID'],
             'type'      => trim($line[1]),
-            'omega'     => ltrim($line[2]) + 0,
+            'omega'     => mp_num(ltrim($line[2])),
             'conf'      => rtrim($line[3])
         );
     }
@@ -1612,7 +1612,7 @@ function loadSuitenameReport($datafile)
             //'resNum'    => $decomp['resNum'],
             //'insCode'   => $decomp['insCode'],
             'conformer' => $conf,
-            'suiteness' => substr($line[6],12,5) + 0,
+            'suiteness' => mp_num(substr($line[6],12,5)),
             'bin'       => substr($line[6],4,4),
             'triage'    => substr($line[6],18),
             'isOutlier' => ($conf == '!!')
@@ -1713,9 +1713,9 @@ function loadCablam($datafile)
             'cablamScore' => $line[2]*100,
             'caGeomScore' => $line[3]*100,
             'secStruc'    => $line[4],
-            'alpha'       => $line[5] + 0,
-            'beta'        => $line[6] + 0,
-            'threeten'    => $line[7] + 0
+            'alpha'       => mp_num($line[5]),
+            'beta'        => mp_num($line[6]),
+            'threeten'    => mp_num($line[7])
         );
     }
     return $ret;
@@ -1847,8 +1847,8 @@ function loadValidationBondReport($datafile, $moltype)
         //echo "'".$cnit."'\n";
         //$decomp = decomposeResName($cnit);
         $measure = $line[6];
-        $value = $line[7] + 0;
-        $sigma = $line[8] + 0;
+        $value = mp_num($line[7]);
+        $sigma = mp_num($line[8]);
         $type = $line[9];
         if ($moltype == "protein")
         {
@@ -1932,8 +1932,8 @@ function loadValidationAngleReport($datafile, $moltype)
         $cnit = $line[1].$line[2].$line[3].$line[4].$line[5];
         //$decomp = decomposeResName($cnit);
         $measure = $line[6];
-        $value = $line[7] + 0;
-        $sigma = $line[8] + 0;
+        $value = mp_num($line[7]);
+        $sigma = mp_num($line[8]);
         $type = $line[9];
         if ($moltype == "protein")
         {
@@ -2012,21 +2012,21 @@ function load_chiral_summary($chiral_result_file)
         $line = explode(' ', rtrim($line));
         if ($line[2] == "handedness")
         {
-          $chiral_outliers += $line[1]+0;
-          $chiral_centers  += $line[5]+0;
+          $chiral_outliers += mp_num($line[1]);
+          $chiral_centers  += mp_num($line[5]);
         }
         elseif ($line[2] == "total")
         {
-          $total_outliers += $line[1]+0;
-          $tetra_centers  += $line[5]+0;
+          $total_outliers += mp_num($line[1]);
+          $tetra_centers  += mp_num($line[5]);
         }
         elseif ($line[2] == "tetrahedral")
         {
-          $tetra_outliers += $line[1]+0;
+          $tetra_outliers += mp_num($line[1]);
         }
         elseif ($line[2] == "pseudochiral")
         {
-          $pseudochiral_outliers += $line[1]+0;
+          $pseudochiral_outliers += mp_num($line[1]);
         }
       }
      ###if ($line[1] == 'outliers' and $line[5] == 'CA')
@@ -2344,7 +2344,7 @@ function decomposeResName($name)
       return array(
         'resType'   => substr($name, 8, 3),
         'chainID'   => substr($name, 0, 2),
-        'resNum'    => trim(substr($name, 2, 4))+0,
+        'resNum'    => mp_num(trim(substr($name, 2, 4))),
         'insCode'   => substr($name, 6, 1),
         'altID'     => substr($name, 7, 1));
     }
@@ -2353,7 +2353,7 @@ function decomposeResName($name)
       return array(
         'resType'   => substr($name, 10, 3),
         'chainID'   => substr($name, 0, 4),
-        'resNum'    => trim(substr($name, 4, 4))+0,
+        'resNum'    => mp_num(trim(substr($name, 4, 4))),
         'insCode'   => substr($name, 8, 1),
         'altID'     => substr($name, 9, 1));
     }
@@ -2383,7 +2383,7 @@ function decomposeResNameCctbx($name)
     return array(
         'resType'   => substr($name, 7, 3),
         'chainID'   => substr($name, 0, 1),
-        'resNum'    => trim(substr($name, 1, 4))+0,
+        'resNum'    => mp_num(trim(substr($name, 1, 4))),
         'insCode'   => substr($name, 5, 1)
     );
 }
@@ -2423,7 +2423,7 @@ function findAltConfs($infile)
     while(!feof($in))
     {
         $s = fgets($in, 1024);
-        $alt = $s{16};
+        $alt = $s[16];
         if($alt != ' ' && (startsWith($s, "ATOM") || startsWith($s, "HETATM")))
         {
             $res    = pdbComposeResName($s);
@@ -2578,7 +2578,7 @@ function listResidueBfactors($infile)
         {
             $cnit = pdbComposeResName($s);
             //echo "'".$cnit."'\n";
-            $Bfact = substr($s, 60, 6) + 0;
+            $Bfact = mp_num(substr($s, 60, 6));
             $res[$cnit] = max($Bfact, $res[$cnit]);
             $atom = substr($s, 12, 4);
             if(preg_match('/ N  | CA | C  | O  /', $atom))
@@ -2652,9 +2652,9 @@ function groupAdjacentRes($resList)
     {
         if(!$_SESSION['useSEGID'])
         {
-          $num = substr($res, 2, 4) + 0;
+          $num = mp_num(substr($res, 2, 4));
           // If old run is ending, append it and start fresh:
-          if(isset($run) && !($num - $prevNum <= 1 && $chainID == $res{0}))
+          if(isset($run) && !($num - $prevNum <= 1 && $chainID == $res[0]))
           {
               $out[$chainID][] = $run;
               unset($run);
@@ -2666,9 +2666,9 @@ function groupAdjacentRes($resList)
         }
         else
         {
-          $num = substr($res, 4, 4) + 0;
+          $num = mp_num(substr($res, 4, 4));
           // If old run is ending, append it and start fresh:
-          if(isset($run) && !($num - $prevNum <= 1 && $chainID == $res{0}))
+          if(isset($run) && !($num - $prevNum <= 1 && $chainID == $res[0]))
           {
               $out[$chainID][] = $run;
               unset($run);

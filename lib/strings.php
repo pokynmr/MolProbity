@@ -17,6 +17,21 @@ function endsWith($haystack, $needle)
 }
 #}}}########################################################################
 
+#{{{ mp_num - "$x + 0" as PHP 7 did it (PHP 8 throws TypeError on "" + 0)
+############################################################################
+/**
+* Numeric value of a parsed field: the leading number of a string (0 if none),
+* 0 for null/false. Replaces the "$x + 0" casts, which PHP 8 refuses for
+* non-numeric strings such as an empty column.
+*/
+function mp_num($x)
+{
+    if(is_string($x) && !is_numeric($x))
+        return preg_match('/^[ \t\n\r\v\f]*[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?/', $x, $m) ? $m[0] + 0 : 0;
+    return $x + 0;
+}
+#}}}########################################################################
+
 #{{{ formatFilesize - human-readable file size with at least 2 sig. digits.
 ############################################################################
 function formatFilesize($size)
@@ -61,11 +76,11 @@ function formatDayAdaptive($time)
     $now            = time();
     $nowDate        = getdate($now+$offset_sec);
     $timeDate       = getdate($time+$offset_sec);
-    if($nowDate['year'] == $timeDate['year'] && $nowDate['yday']+0 == $timeDate['yday']+0)
+    if($nowDate['year'] == $timeDate['year'] && mp_num($nowDate['yday']) == mp_num($timeDate['yday']))
         return "Today";
-    elseif($nowDate['year'] == $timeDate['year'] && $nowDate['yday']+0 == $timeDate['yday']+1)
+    elseif($nowDate['year'] == $timeDate['year'] && mp_num($nowDate['yday']) == $timeDate['yday']+1)
         return "Yesterday";
-    elseif($nowDate['year'] == $timeDate['year'] && $nowDate['yday']+0 > $timeDate['yday']+0 && $nowDate['yday']+0 < $timeDate['yday']+7)
+    elseif($nowDate['year'] == $timeDate['year'] && mp_num($nowDate['yday']) > mp_num($timeDate['yday']) && mp_num($nowDate['yday']) < $timeDate['yday']+7)
         return gmdate("l", ($time+$offset_sec));
     else
         return gmdate("j M Y", ($time+$offset_sec));

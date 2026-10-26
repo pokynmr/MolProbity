@@ -141,7 +141,7 @@ $ok = true;
     else
         echo "<li>Safe mode disabled - good.</li>\n";
 
-    $magic = get_magic_quotes_gpc();
+    $magic = function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc();
     if($magic)  echo "<li><b>Magic quotes GPC is enabled.</b> Disable it in <tt>/etc/php.ini</tt> or user-entered text may be corrupted.</li>\n";
     else        echo "<li>Magic quotes GPC is disabled - good.</li>\n";
     

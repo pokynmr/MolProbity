@@ -91,11 +91,11 @@ function getEffectiveResolutionPercentile($effRes, $actualRes = 0)
     {
 
         $x = fgets($in, 1024);
-        if($x{0} == '#') continue;
+        if($x[0] == '#') continue;
 
         $x = explode(',', $x);
-        $ar = $x[1]+0;
-        $er = $x[2]+0;
+        $ar = mp_num($x[1]);
+        $er = mp_num($x[2]);
 
         if($minRes <= $ar && $ar <= $maxRes)
         {

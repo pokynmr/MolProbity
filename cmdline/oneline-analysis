@@ -117,7 +117,7 @@ function summaryAnalysis($modelID)
         $cbdev = loadCbetaDev("$rawDir/$model[prefix]cbdev.data");
         $badCbeta = findCbetaOutliers($cbdev);
         //$cbStats = calcCbetaStats($cbdev);
-        $out .= ":" . count($badCbeta) . ":" . count($cbdev);
+        $out .= ":" . count((array)$badCbeta) . ":" . count((array)$cbdev);
         //$out .= ":$cbStats[max]:$cbStats[median]:".round($cbStats['mean'], 3);
     }
     if($optRota)
@@ -128,7 +128,7 @@ function summaryAnalysis($modelID)
         $badRota = findRotaOutliers($rota);
         $rotaFav = 0;
         foreach($rota as $r) { if($r['eval'] == "Favored") $rotaFav++; }
-        $out .= ":" . count($badRota) . ":" . $rotaFav . ":" . count($rota);
+        $out .= ":" . count((array)$badRota) . ":" . $rotaFav . ":" . count((array)$rota);
     }
     if($optRama)
     {
@@ -141,16 +141,16 @@ function summaryAnalysis($modelID)
         #exit();
         #echo ":" . $summaries['rama']['outlier'] . ":" . $summaries['rama']['allowed'] . ":" . $summaries['rama']['favored'] . ":" . $summaries['rama']['residues'];
         #exit();
-        $out .= ":" . ($summaries['rama']['outlier']+0) . ":" . ($summaries['rama']['allowed']+0) . ":" . ($summaries['rama']['favored']+0) . ":" . ($summaries['rama']['residues']+0);
+        $out .= ":" . (mp_num($summaries['rama']['outlier'])) . ":" . (mp_num($summaries['rama']['allowed'])) . ":" . (mp_num($summaries['rama']['favored'])) . ":" . (mp_num($summaries['rama']['residues']));
     }
     if($optOmega)
     {
         runOmegalyze($pdbfile, "$rawDir/$model[prefix]omega.data");
         $omega = loadOmegalyze("$rawDir/$model[prefix]omega.data");
         $summaries['omega'] = loadOmegaSummary($omega);
-        $out .= ":" . ($summaries['omega']['cisprocount']+0) . ":" . ($summaries['omega']['prototal']+0);
-        $out .= ":" . ($summaries['omega']['cisnonprocount']+0) . ":" . ($summaries['omega']['nonprototal']+0);
-        $out .= ":" . ($summaries['omega']['twistcount']+0) . ":" . ($summaries['omega']['totalres']+0);
+        $out .= ":" . (mp_num($summaries['omega']['cisprocount'])) . ":" . (mp_num($summaries['omega']['prototal']));
+        $out .= ":" . (mp_num($summaries['omega']['cisnonprocount'])) . ":" . (mp_num($summaries['omega']['nonprototal']));
+        $out .= ":" . (mp_num($summaries['omega']['twistcount'])) . ":" . (mp_num($summaries['omega']['totalres']));
     }
     if($optGeom)
     {
@@ -208,7 +208,7 @@ function summaryAnalysis($modelID)
       $tetra_outliers = $chiral_summary['tetra_outliers'];
       $pseudo_outliers = $chiral_summary['pseudo_outliers'];
       //chiralSwaps:tetraOutliers:pseudochiralErrors
-      $out .= ":".($chiral_outliers+0).":".($tetra_outliers+0).":".($pseudo_outliers+0);
+      $out .= ":".(mp_num($chiral_outliers)).":".(mp_num($tetra_outliers)).":".(mp_num($pseudo_outliers));
     }
     if($optCablam)
     {
@@ -231,12 +231,12 @@ function summaryAnalysis($modelID)
       //'water_clashes' => $clashes,
       //'water_count' => $waters,
       //'water_clash_pct' => $clashpct);
-      $out .= ":".($undowser['water_clashes']+0).":".($undowser['water_count']+0);
+      $out .= ":".(mp_num($undowser['water_clashes'])).":".(mp_num($undowser['water_count']));
     }
     if($optClash && $optRota && $optRama)
     {
       $axr = $pdbstats['resolution'];                                     // Actual Xtalographic Resolution
-      if ((count($rota) != 0) && (count($rama) != 0)) {
+      if ((count((array)$rota) != 0) && (count((array)$rama) != 0)) {
         $mer = getEffectiveResolution($clash, $rota, $rama, $summaries);    // MolProbity Effective Resolution
         $mer_pct = getEffectiveResolutionPercentile($mer, $axr);
         $out .= sprintf(':%.3f', $mer);
@@ -250,14 +250,14 @@ function summaryAnalysis($modelID)
       runBasePhosPerp($pdbfile, $outfile);
       $pperp = loadBasePhosPerp($outfile);
       $badPperp = findBasePhosPerpOutliers($pperp);
-      $out .= ":" . count($badPperp) . ":" . count($pperp);
+      $out .= ":" . count((array)$badPperp) . ":" . count((array)$pperp);
     }
     if($optSuite) {
       $outfile = "$rawDir/$model[prefix]suitename.txt";
       runSuitenameReport($pdbfile, $outfile);
       $suites = loadSuitenameReport($outfile);
       $badSuites = findSuitenameOutliers($suites);
-      $out .= ":" . count($badSuites) . ":" . count($suites);
+      $out .= ":" . count((array)$badSuites) . ":" . count((array)$suites);
     }
 
     $out .= "\n"; // end of this line

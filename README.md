@@ -36,6 +36,19 @@ Installation is fairly straightforward but will probably require some system
 administration background.  The most notable wrinkle is the need to install
 an older version of PHP (PHP5.6) as the default PHP interpreter.
 
+**PHP 8 (pokynmr fork, October 2026).** This fork also runs on PHP 8 (checked with
+PHP 8.4.27 for the command-line tools `oneline-analysis` and `residue-analysis`). The
+oneline / residue outputs are byte-identical to the unmodified code (commit daee525)
+under PHP 7.4.33, run whole and split per model, for X-ray proteins, RNA and NMR ensembles.
+The changes, in lib/, cmdline/ and public_html/:
+- `$s{0}` string offsets became `$s[0]`, and the PHP 4 constructors became `__construct`;
+- `each()`, `create_function()` and the magic-quotes calls were replaced;
+- the `$x + 0` casts of parsed fields became `mp_num($x)` (lib/strings.php). It applies PHP 7's
+  string-to-number rule, because PHP 8 throws a TypeError on `"" + 0`;
+- `count()` of a possibly null result became `count((array)$x)`;
+- under PHP 8, lib/core.php keeps the warnings for undefined keys and variables as quiet
+  as PHP 7's notices, and leaves out PHP 8 deprecations.
+
 MolProbity installation is accomplished with a downloadable script which
 fetches required sources and data into a specifically created empty directory
 as opposed to cloning this repository. 
